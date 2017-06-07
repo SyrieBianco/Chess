@@ -1,6 +1,7 @@
 require 'colorize'
 require_relative 'board'
 require_relative 'cursor'
+
 class Display
   attr_reader :cursor, :board, :count
   def initialize
@@ -10,17 +11,43 @@ class Display
   end
 
   def move_cursor
-    won = 0
-    until won == 10
-      system('clear')
+    won = false
+
+    until won
+      # system('clear')
       render
       input = cursor.get_input
-      #highlight intial selected and cursor pos
+      #to do :highlight intial selected and cursor pos
       #if not intial selected, and cursor leaves pos, unselect
+      p board[cursor.cursor_pos].class
+
       if input == cursor.cursor_pos
         board[(cursor.cursor_pos)].toggle_selected
       end
-      won += 1
+      potential_move
+    end
+  end
+
+  def potential_move
+    selected_pos = []
+    board.grid.each_with_index do |row, rowidx|
+      row.each_index do |colidx|
+        pos = [rowidx, colidx]
+        current_piece = board[pos]
+        selected_pos << pos if current_piece.selected
+      end
+    end
+    if selected_pos.length == 2
+      puts "i'm in potential"
+      end_pos = cursor.cursor_pos
+      selected_pos -= cursor.cursor_pos
+      start_pos = selected_pos.first
+
+      p start_pos
+      p end_pos
+      puts 'leaving potential'
+      board.move_piece(start_pos, end_pos)
+      board[end_pos].toggle_selected
     end
   end
 

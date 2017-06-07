@@ -83,6 +83,10 @@ class Cursor
       @cursor_pos
     when :left, :right, :up, :down
       update_pos(MOVES[key])
+      1
+      #handle leaving a selected or unselected pos
+    when :escape, :ctrl_c
+      exit
     end
   end
 
